@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, RotateCcw, Type, Gauge, Target, Maximize2, Minimize2, Music, Volume2, VolumeX, Upload } from 'lucide-react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?url';
+import myAudio from './assets/audio/sound.mp3';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -13,8 +14,8 @@ const App = () => {
   const [fontSize, setFontSize] = useState(64);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const [musicVolume, setMusicVolume] = useState(0.3);
-  const [musicSource, setMusicSource] = useState('/RSVP/audio/sound.mp3');
+  const [musicVolume, setMusicVolume] = useState(0.9);
+  const [musicSource, setMusicSource] = useState(myAudio);
   const [musicName, setMusicName] = useState('ETUDE.mp3');
   const [textFileName, setTextFileName] = useState('');
   const [isTextLoading, setIsTextLoading] = useState(false);
