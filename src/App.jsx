@@ -14,7 +14,7 @@ const App = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
-  const [musicSource, setMusicSource] = useState('/audio/ETUDE.mp3');
+  const [musicSource, setMusicSource] = useState('/RSVP/audio/sound.mp3');
   const [musicName, setMusicName] = useState('ETUDE.mp3');
   const [textFileName, setTextFileName] = useState('');
   const [isTextLoading, setIsTextLoading] = useState(false);
