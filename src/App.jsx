@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, RotateCcw, Type, Gauge, Target, Maximize2, Minimize2, Music, Volume2, VolumeX, Upload } from 'lucide-react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?url';
-import myAudio from './assets/audio/sound.mp3';
+import myAudio from './assets/audio/ETUDE.mp3';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
