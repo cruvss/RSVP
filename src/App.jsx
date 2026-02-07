@@ -6,7 +6,6 @@ import myAudio from './assets/audio/ETUDE.mp3';
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
-// Constants
 const DEFAULT_TEXT = "Rapid Serial Visual Presentation (RSVP) allows you to read much faster by keeping your eyes anchored on a single point. This prototype highlights the middle anchor point in red to minimize eye movement.";
 const DEFAULT_WPM = 300;
 const DEFAULT_FONT_SIZE = 64;
@@ -14,7 +13,6 @@ const MIN_WPM = 50;
 const MAX_WPM = 1000;
 const WPM_STEP = 50;
 
-// Custom Hooks
 const useWords = (text) => {
   return text.split(/\s+/).filter(w => w.length > 0);
 };
@@ -22,10 +20,16 @@ const useWords = (text) => {
 const useCanvas = (canvasRef, currentIndex, words, fontSize, isFullscreen) => {
   const getAnchorIndex = useCallback((word) => {
     const length = word.length;
-    if (length <= 1) return 0;
-    if (length <= 5) return 1;
-    if (length <= 9) return 2;
-    if (length <= 13) return 3;
+    if (length === 1) return 0;
+    if (length === 2) return 0;
+    if (length === 3) return 1;
+    if (length === 4) return 1;
+    if (length === 5) return 1;
+    if (length === 6) return 2;
+    if (length === 7) return 2;
+    if (length === 8) return 2;
+    if (length === 9) return 3;
+    if (length >= 10 && length <= 13) return 3;
     return 4;
   }, []);
 
@@ -39,18 +43,15 @@ const useCanvas = (canvasRef, currentIndex, words, fontSize, isFullscreen) => {
     const width = parseInt(canvas.style.width) || canvas.width;
     const height = parseInt(canvas.style.height) || canvas.height;
 
-    // Clear canvas
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(0, 0, width, height);
 
     if (!word) return;
 
-    // Calculate responsive font size
     let currentFontSize = fontSize;
     ctx.font = `bold ${currentFontSize}px "Courier New", monospace`;
     let wordWidth = ctx.measureText(word).width;
 
-    // More aggressive scaling for small screens - leave 15% padding
     const maxWidth = width * 0.7;
     if (wordWidth > maxWidth) {
       currentFontSize = Math.floor((currentFontSize * maxWidth) / wordWidth);
@@ -69,9 +70,11 @@ const useCanvas = (canvasRef, currentIndex, words, fontSize, isFullscreen) => {
 
     const centerX = width / 2;
     const centerY = height / 2;
-    const startX = centerX - w1 - (wAnchor / 2);
 
-    // Draw centering guide notches
+    const anchorStartX = centerX - (wAnchor / 2);
+    const part1StartX = anchorStartX - w1;
+    const part2StartX = anchorStartX + wAnchor;
+
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -81,15 +84,14 @@ const useCanvas = (canvasRef, currentIndex, words, fontSize, isFullscreen) => {
     ctx.lineTo(centerX, centerY + (currentFontSize * 0.8));
     ctx.stroke();
 
-    // Draw word parts
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(part1, startX, centerY);
+    ctx.fillText(part1, part1StartX, centerY);
 
     ctx.fillStyle = '#ff4444';
-    ctx.fillText(anchorChar, startX + w1, centerY);
+    ctx.fillText(anchorChar, anchorStartX, centerY);
 
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(part2, startX + w1 + wAnchor, centerY);
+    ctx.fillText(part2, part2StartX, centerY);
   }, [currentIndex, words, fontSize, getAnchorIndex, canvasRef]);
 
   return { draw };
@@ -109,7 +111,7 @@ const useCanvasResize = (canvasRef, draw, isFullscreen) => {
       } else {
         const parent = canvasRef.current.parentElement;
         displayWidth = parent ? parent.clientWidth : window.innerWidth * 0.9;
-        displayHeight = Math.min(displayWidth * 0.4, 400); // Responsive height
+        displayHeight = Math.min(displayWidth * 0.4, 400);
       }
 
       canvasRef.current.width = displayWidth * dpr;
@@ -130,7 +132,6 @@ const useCanvasResize = (canvasRef, draw, isFullscreen) => {
   }, [draw, isFullscreen, canvasRef]);
 };
 
-// Components
 const WPMControl = ({ wpm, setWpm, compact = false }) => (
   <div className={`flex ${compact ? 'flex-row' : 'flex-col'} items-center gap-${compact ? '3' : '1'} min-w-[120px]`}>
     {!compact && <span className="text-[10px] font-bold text-neutral-500 uppercase">WPM</span>}
@@ -357,7 +358,6 @@ const FullscreenView = ({
   </div>
 );
 
-// Main App Component
 const App = () => {
   const [text, setText] = useState(DEFAULT_TEXT);
   const [wpm, setWpm] = useState(DEFAULT_WPM);
@@ -429,7 +429,6 @@ const App = () => {
     }
   };
 
-  // Reading loop
   useEffect(() => {
     if (isPlaying && currentIndex < words.length - 1) {
       const msPerWord = (60 / wpm) * 1000;
@@ -442,12 +441,10 @@ const App = () => {
     return () => clearTimeout(timerRef.current);
   }, [isPlaying, currentIndex, words.length, wpm]);
 
-  // Update canvas on every change
   useEffect(() => {
     draw();
   }, [draw]);
 
-  // Background music control
   useEffect(() => {
     if (!audioRef.current) return;
     
