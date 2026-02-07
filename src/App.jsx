@@ -19,7 +19,7 @@ const useWords = (text) => {
 
 const useCanvas = (canvasRef, currentIndex, words, fontSize, isFullscreen) => {
   const getAnchorIndex = useCallback((word) => {
-    return Math.floor(word.length / 2);
+    return Math.max(0, Math.floor(word.length / 2) - 1);
   }, []);
 
   const draw = useCallback(() => {
