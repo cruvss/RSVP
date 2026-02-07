@@ -19,18 +19,7 @@ const useWords = (text) => {
 
 const useCanvas = (canvasRef, currentIndex, words, fontSize, isFullscreen) => {
   const getAnchorIndex = useCallback((word) => {
-    const length = word.length;
-    if (length === 1) return 0;
-    if (length === 2) return 0;
-    if (length === 3) return 1;
-    if (length === 4) return 1;
-    if (length === 5) return 1;
-    if (length === 6) return 2;
-    if (length === 7) return 2;
-    if (length === 8) return 2;
-    if (length === 9) return 3;
-    if (length >= 10 && length <= 13) return 3;
-    return 4;
+    return Math.floor(word.length / 2);
   }, []);
 
   const draw = useCallback(() => {
@@ -455,14 +444,12 @@ const App = () => {
     }
   }, [isMusicPlaying, isPlaying]);
 
-  // Update music volume
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = musicVolume;
     }
   }, [musicVolume]);
 
-  // Cleanup blob URLs
   useEffect(() => {
     return () => {
       if (musicSource.startsWith('blob:')) {
@@ -496,7 +483,6 @@ const App = () => {
 
       <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col lg:grid lg:grid-cols-[320px_1fr] gap-6 lg:gap-8">
-          {/* Left Config Panel */}
           <aside className="lg:sticky lg:top-24 space-y-6 order-2 lg:order-1">
             <SpeedControlPanel wpm={wpm} setWpm={setWpm} />
             <MusicControlPanel 
@@ -514,19 +500,15 @@ const App = () => {
             />
           </aside>
 
-          {/* Right Content */}
           <section className="space-y-6 order-1 lg:order-2">
-            {/* Main Display Area */}
             <div className="relative bg-neutral-900 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
               <canvas ref={canvasRef} className="w-full" />
-              {/* Progress bar */}
               <div 
                 className="absolute bottom-0 left-0 h-1 bg-red-600 transition-all duration-150" 
                 style={{ width: `${((currentIndex + 1) / (words.length || 1)) * 100}%` }} 
               />
             </div>
 
-            {/* Playback Controls */}
             <PlaybackControls 
               isPlaying={isPlaying}
               setIsPlaying={setIsPlaying}
@@ -535,7 +517,6 @@ const App = () => {
               setWpm={setWpm}
             />
 
-            {/* Source Text */}
             <div className="bg-neutral-900 border border-white/5 rounded-2xl p-4 sm:p-6 space-y-3">
               <div className="flex items-center gap-2 text-neutral-400 px-1">
                 <Type size={16} />
